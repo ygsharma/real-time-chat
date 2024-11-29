@@ -34,22 +34,25 @@ export class inMemoryStore implements Store {
     addChat(userId: UserId, roomId: string, name: string, message: string) {
         const room = this.store.get(roomId);
         if (!room) {
-            return [];
+            return null;
         }
 
-        room.chats.push({
+        const chat = {
             id: (globalChatId++).toString(),
             userId,
             name,
             message,
             upvotes: []
-        })
+        }
+
+        room.chats.push(chat);
+        return chat;
     }
 
     upvote(userId: UserId, roomId: string, chatId: string) {
         const room = this.store.get(roomId);
         if (!room) {
-            return [];
+            return null;
         }
         // Todo: Make this faster
         const chat = room.chats.find(({id}) => id === chatId);
@@ -57,5 +60,6 @@ export class inMemoryStore implements Store {
         if (chat) {
             chat.upvotes.push(userId);
         }
+        return chat;
     }
 }
